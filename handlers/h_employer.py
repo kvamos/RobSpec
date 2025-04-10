@@ -291,6 +291,14 @@ def register_employer_handlers(bot: TeleBot):
             project_id = int(call.data.split('_')[3])
             db.update_project_status(project_id=project_id , new_status='canceled')
             bot.answer_callback_query(call.id, "проект отменён" , show_alert=True)
+
         except Exception as e:
             bot.answer_callback_query(call.id, "Ошибка отклика")
             print(f"Error in handle_project_application: {e}")
+    
+
+
+    @bot.message_handler(func=lambda m: m.text == "👥 Отклики")
+    @employer_only(bot , lambda msg: msg)
+    def application_employer(msg):
+        

@@ -39,7 +39,7 @@ def get_employer_data(employer_id: int) -> dict:
             cursor.execute("""
                 SELECT project_id, title, status, deadline
                 FROM projects
-                WHERE employer_id = ?
+                WHERE employer_id = ? and status != 'canceled'
                 ORDER BY editing_at DESC
                 LIMIT 3
             """, (employer_id,))
@@ -102,7 +102,7 @@ def get_project_ids_employer(employer_id: int) -> list[int]:
         with g.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT project_id FROM projects WHERE p.status != 'canceled' and employer_id = ?",
+                "SELECT project_id FROM projects WHERE status != 'canceled' and employer_id = ?",
                 (employer_id,)
             )
             return [row[0] for row in cursor.fetchall()]
@@ -111,7 +111,7 @@ def get_project_ids_employer(employer_id: int) -> list[int]:
         logger.error(f"Error in get_projects_id_employer: {e}")
         return None
     except Exception as e:
-        logger.error(f"Unexpected error in get_projects_id_employer: {e}")
+        logger.error(f"Unexpected error in get_projects_ids_employer: {e}")
         return None
 
 
